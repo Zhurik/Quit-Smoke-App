@@ -1,7 +1,5 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:quitsmoke/comps/getlang.dart';
 import 'package:quitsmoke/static/currencies.dart';
@@ -11,19 +9,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../size_config.dart';
 
 class SettingsScreen extends StatefulWidget {
-  SettingsScreen({Key key}) : super(key: key);
+  SettingsScreen({Key? key}) : super(key: key);
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String lang = "";
-  int dailyCigarattes;
-  double pricePerCigaratte;
-  String currency;
-  TextEditingController controllerday;
-  TextEditingController controllercost;
+  String? lang = "";
+  late int dailyCigarattes;
+  late double pricePerCigaratte;
+  late String currency;
+  late TextEditingController controllerday;
+  late TextEditingController controllercost;
 
   @override
   void initState() {
@@ -36,10 +34,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> loadData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    dailyCigarattes = pref.getInt("dailycigarattes");
-    pricePerCigaratte = pref.getDouble("pricePerCigaratte");
-    currency = pref.getString("currency");
-    stopDate = DateTime.parse(pref.getString("startTime"));
+    dailyCigarattes = pref.getInt("dailycigarattes")!;
+    pricePerCigaratte = pref.getDouble("pricePerCigaratte")!;
+    currency = pref.getString("currency") ?? "";
+    stopDate = DateTime.parse(pref.getString("startTime")!);
 
     controllerday.text = dailyCigarattes.toString();
     controllercost.text = pricePerCigaratte.toString();
@@ -47,9 +45,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   saveData() async {
-    if (pricePerCigaratte == null ||
-        dailyCigarattes == null ||
-        currency == null) return false;
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.setDouble("pricePerCigaratte", pricePerCigaratte);
     pref.setInt("dailycigarattes", dailyCigarattes);
@@ -104,12 +99,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             FittedBox(
               child: DropdownButton<String>(
-                value: currency ?? null,
+                value: currency,
                 hint: Text(
                   langs[lang]["welcome"]["choosecurrency"],
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText2
+                      .bodyMedium!
                       .copyWith(fontSize: getProportionateScreenWidth(26)),
                 ),
                 items: currencyList.map((Map value) {
@@ -119,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   );
                 }).toList(),
                 onChanged: (p) {
-                  currency = p;
+                  currency = p!;
                   setState(() {});
                 },
               ),
@@ -170,10 +165,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  DateTime stopDate;
+  late DateTime stopDate;
 
   _pickDate(BuildContext context) async {
-    DateTime date = await showDatePicker(
+    DateTime? date = await showDatePicker(
       context: context,
       firstDate: DateTime(DateTime.now().year - 5),
       lastDate: DateTime.now(),
@@ -181,8 +176,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     TimeOfDay t =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
-    if (date != null && t != null)
+        await showTimePicker(context: context, initialTime: TimeOfDay.now()) as TimeOfDay;
+    if (date != null)
       setState(() {
         stopDate = date;
         print(t.hour);
@@ -214,7 +209,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           Text(
             "${langs[lang]["home"]["settings"]}",
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Colors.black, fontSize: getProportionateScreenWidth(26)),
           )
         ],

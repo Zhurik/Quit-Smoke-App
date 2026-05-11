@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -10,10 +9,10 @@ class ProgressPainter extends CustomPainter {
   final double circleWidth;
 
   ProgressPainter(
-      {this.defaultCircleColor,
-      this.percentageCompletedCircleColor,
-      this.circleWidth,
-      this.completedPercentage});
+      {required this.defaultCircleColor,
+      required this.percentageCompletedCircleColor,
+      required this.circleWidth,
+      required this.completedPercentage});
 
   getPaint(Color color) {
     return Paint()

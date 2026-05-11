@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:quitsmoke/comps/cigaratte.dart';
 import 'package:quitsmoke/comps/getlang.dart';
@@ -16,14 +14,14 @@ import '../size_config.dart';
 
 class WalletScreen extends StatefulWidget {
   final Cigaratte cigaratteManager;
-  WalletScreen({Key key, this.cigaratteManager}) : super(key: key);
+  WalletScreen({Key? key, required this.cigaratteManager}) : super(key: key);
 
   @override
   _WalletScreenState createState() => _WalletScreenState();
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  String lang = "en";
+  String? lang = "en";
   List<Transaction> trlist = [];
   final scaffoldState = GlobalKey<ScaffoldState>();
 
@@ -41,7 +39,7 @@ class _WalletScreenState extends State<WalletScreen> {
 
   _getTransactions() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    currency = pref.getString("currency");
+    currency = pref.getString("currency") ?? "";
     var tr = jsonDecode((pref.getString("transactionData") ?? "[]"));
     for (var e in tr) {
       trlist.add(Transaction(
@@ -54,12 +52,12 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   _addTransaction(
-      {DateTime date, double price, String title, String description}) {
-    if (price > currentBalance) return;
+      {DateTime? date, double? price, String? title, String? description}) {
+    if (price! > currentBalance) return;
     trlist.insert(
         0,
         Transaction(
-            time: date, price: price, title: title, description: description));
+            time: date!, price: price, title: title!, description: description!));
     _saveTransaction();
     setState(() {});
   }
@@ -79,7 +77,7 @@ class _WalletScreenState extends State<WalletScreen> {
     pref.setString("transactionData", jsonEncode(lister));
   }
 
-  Timer statetimer;
+  late Timer statetimer;
   @override
   void initState() {
     lang = getLang();
@@ -97,7 +95,7 @@ class _WalletScreenState extends State<WalletScreen> {
     super.dispose();
   }
 
-  String _tsdescription;
+  late String _tsdescription;
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -106,7 +104,7 @@ class _WalletScreenState extends State<WalletScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (!_sheetopen)
-            scaffoldState.currentState.showBottomSheet((context) => Container(
+            scaffoldState.currentState!.showBottomSheet((context) => Container(
                   padding: EdgeInsets.all(15),
                   color: Colors.white,
                   height: getProportionateScreenHeight(340),
@@ -116,7 +114,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       "${langs[lang]["wallet"]["newtransaction"]}",
                       style: Theme.of(context)
                           .textTheme
-                          .headline4
+                          .headlineMedium!
                           .copyWith(fontSize: getProportionateScreenWidth(22)),
                     ),
                     TextField(
@@ -126,7 +124,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           hintText: "${langs[lang]["wallet"]["title"]}"),
                       style: Theme.of(context)
                           .textTheme
-                          .headline4
+                          .headlineMedium!
                           .copyWith(fontSize: getProportionateScreenWidth(22)),
                     ),
                     TextField(
@@ -136,7 +134,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           hintText: "${langs[lang]["wallet"]["description"]}"),
                       style: Theme.of(context)
                           .textTheme
-                          .headline4
+                          .headlineMedium!
                           .copyWith(fontSize: getProportionateScreenWidth(22)),
                     ),
                     TextField(
@@ -149,7 +147,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           hintText: "${langs[lang]["wallet"]["amount"]}"),
                       style: Theme.of(context)
                           .textTheme
-                          .headline4
+                          .headlineMedium!
                           .copyWith(fontSize: getProportionateScreenWidth(22)),
                     ),
                     ElevatedButton(
@@ -189,7 +187,7 @@ class _WalletScreenState extends State<WalletScreen> {
                 children: [
                   Text(
                     "${langs[lang]["wallet"]["balance"]}",
-                    style: Theme.of(context).textTheme.headline4.copyWith(
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: Colors.white.withAlpha(240),
                         fontWeight: FontWeight.w300),
                     textAlign: TextAlign.center,
@@ -198,7 +196,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: AutoSizeText(
                       "${NumberFormat.currency(symbol: currency).format(currentBalance)}",
-                      style: Theme.of(context).textTheme.headline4.copyWith(
+                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Colors.white,
                           fontSize: getProportionateScreenWidth(42)),
                       textAlign: TextAlign.center,
@@ -212,7 +210,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               "${langs[lang]["wallet"]["daily"]} ${widget.cigaratteManager.moneyPerSecond * 60 * 60 * 24} $currency",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4
+                                  .headlineMedium!
                                   .copyWith(
                                       color: Colors.white.withAlpha(200),
                                       fontWeight: FontWeight.w300,
@@ -224,7 +222,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               "${langs[lang]["wallet"]["weekly"]} ${widget.cigaratteManager.moneyPerSecond * 60 * 60 * 24 * 7} $currency",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4
+                                  .headlineMedium!
                                   .copyWith(
                                       color: Colors.white.withAlpha(200),
                                       fontWeight: FontWeight.w300,
@@ -236,7 +234,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               "${langs[lang]["wallet"]["monthly"]} ${widget.cigaratteManager.moneyPerSecond * 60 * 60 * 24 * 30} $currency",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4
+                                  .headlineMedium!
                                   .copyWith(
                                       color: Colors.white.withAlpha(200),
                                       fontWeight: FontWeight.w300,
@@ -248,7 +246,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               "${langs[lang]["wallet"]["yearly"]} ${widget.cigaratteManager.moneyPerSecond * 60 * 60 * 24 * 365} $currency",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4
+                                  .headlineMedium!
                                   .copyWith(
                                       color: Colors.white.withAlpha(200),
                                       fontWeight: FontWeight.w300,
@@ -285,7 +283,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         topRight: Radius.circular(22)),
                     boxShadow: [
                       BoxShadow(
-                          color: kShadowColor.withOpacity(.3),
+                          color: kShadowColor.withValues(alpha: 0.3),
                           blurRadius: 7,
                           offset: Offset(0, -3))
                     ]),
@@ -348,7 +346,7 @@ class _WalletScreenState extends State<WalletScreen> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                  color: kShadowColor.withOpacity(.3),
+                                  color: kShadowColor.withValues(alpha: 0.3),
                                   blurRadius: 7,
                                   offset: Offset(3, 3))
                             ]),
@@ -365,20 +363,19 @@ class _WalletScreenState extends State<WalletScreen> {
                                   item.title,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline4
+                                      .headlineMedium!
                                       .copyWith(
                                           color: Colors.white,
                                           fontSize:
                                               getProportionateScreenWidth(22)),
                                 ),
-                                if (item.description != null &&
-                                    item.description != "" &&
+                                if (item.description != "" &&
                                     item.description.length > 2)
                                   Text(
-                                    item.description ?? "",
+                                    item.description,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headlineMedium!
                                         .copyWith(
                                             color: Colors.grey[100],
                                             fontSize:
@@ -389,7 +386,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   DateFormat.yMMMMEEEEd().format(item.time),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline4
+                                      .headlineMedium!
                                       .copyWith(
                                           color: Colors.white70,
                                           fontSize:
@@ -404,7 +401,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                   "${NumberFormat.currency(symbol: currency).format(item.price)}",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline4
+                                      .headlineMedium!
                                       .copyWith(
                                           color: Colors.white,
                                           fontSize:
@@ -450,7 +447,7 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
           Text(
             "${langs[lang]["home"]["wallet"]}",
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Colors.white, fontSize: getProportionateScreenWidth(26)),
           )
         ],
@@ -466,5 +463,5 @@ class Transaction {
   final String description;
   get toJson =>
       {"price": price, "time": time.toIso8601String(), "title": title};
-  Transaction({this.price, this.time, this.title, this.description = ""});
+  Transaction({required this.price, required this.time, required this.title, this.description = ""});
 }

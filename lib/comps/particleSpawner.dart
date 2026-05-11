@@ -5,12 +5,12 @@ import 'package:quitsmoke/comps/particle.dart';
 
 class ParticleSpawner with ChangeNotifier {
   List<Particle> particles = [];
-  double initialX;
-  double initialY;
+  late double initialX;
+  late double initialY;
   final Size size;
   double degree = 0;
   double sprayRadius = 70;
-  ParticleSpawner({this.size});
+  ParticleSpawner({required this.size});
   createParticles(int count) {
     final random = Random();
     initialX = size.width / 2;

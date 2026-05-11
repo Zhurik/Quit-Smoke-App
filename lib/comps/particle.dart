@@ -8,21 +8,20 @@ class ParticlePainter extends CustomPainter {
   int particleRadius = 3;
   int sprayRadius = 100;
 
-  ParticleSpawner particles;
-  Rect _area;
-  Paint mPaint;
-  Paint bgPaint;
+  late ParticleSpawner particles;
+  // ignore: unused_field
+  Rect? _area;
+  Paint? mPaint;
+  Paint? bgPaint;
 
-  ParticlePainter({this.particleCount, this.particles})
+  ParticlePainter({required this.particleCount, required this.particles})
       : super(repaint: particles) {
     mPaint = new Paint();
     bgPaint = new Paint()..color = Color.fromARGB(120, 145, 132, 245);
   }
 
   @override
-  void paint(Canvas canvas, Size size) {
-    if (particles == null) return;
-
+  void paint(Canvas canvas, Size? size) {
     for (final particle in particles.particles) {
       _drawParticle(particle, canvas);
     }
@@ -34,30 +33,31 @@ class ParticlePainter extends CustomPainter {
   }
 
   _drawParticle(Particle particle, Canvas canvas) {
+    // ignore: unused_local_variable
     final random = Random();
     canvas.drawOval(
-        Rect.fromLTWH(particle.x, particle.y, particle.r, particle.r),
+        Rect.fromLTWH(particle.x, particle.y, particle.r!, particle.r!),
         Paint()..color = particle.color);
   }
 }
 
 class Particle {
-  double vX;
-  double vY;
+  late double vX;
+  late double vY;
 
-  double x;
-  double y;
-  double r = 3;
+  late double x;
+  late double y;
+  double? r = 3;
   final Color color;
 
   Particle(
-      {double xval,
-      double yval,
-      double avalX,
-      double avalY,
-      double vvalX,
-      double vvalY,
-      this.color}) {
+      {required double xval,
+      required double yval,
+      double? avalX,
+      double? avalY,
+      required double vvalX,
+      required double vvalY,
+      required this.color}) {
     x = xval;
     y = yval;
     vX = vvalX;

@@ -1,9 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:quitsmoke/comps/getlang.dart';
 import 'package:quitsmoke/comps/snappable.dart';
@@ -15,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  WelcomeScreen({Key key}) : super(key: key);
+  WelcomeScreen({Key? key}) : super(key: key);
 
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
@@ -23,15 +21,15 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   List<String> reason = [];
-  String currentReason;
+  late String currentReason;
   String lang = "";
   final myController = TextEditingController();
   final myController2 = TextEditingController();
   final myController3 = TextEditingController();
-  double pricePerCigaratte;
-  int dailycigarattes;
+  double? pricePerCigaratte;
+  int? dailycigarattes;
   int index = 0;
-  String currency;
+  String? currency;
   final snapKey = GlobalKey<SnappableState>();
 
   @override
@@ -43,22 +41,18 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   bool starting = false;
   _startNow() async {
-    if (pricePerCigaratte == null ||
-        dailycigarattes == null ||
-        reason == null ||
-        reason.length == 0 ||
-        currency == null) return false;
+    if (reason.length == 0) return false;
     setState(() {
       starting = true;
     });
-    snapKey.currentState.snap();
+    snapKey.currentState?.snap();
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     Future.delayed(Duration(seconds: 5), () {
       pref.setString("startTime", stopDate.toIso8601String());
-      pref.setDouble("pricePerCigaratte", pricePerCigaratte);
-      pref.setInt("dailycigarattes", dailycigarattes);
-      pref.setString("currency", currency);
+      pref.setDouble("pricePerCigaratte", pricePerCigaratte!);
+      pref.setInt("dailycigarattes", dailycigarattes!);
+      pref.setString("currency", currency!);
       pref.setString("reason", jsonEncode(reason));
 
       Navigator.of(context).pushReplacement(
@@ -66,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     });
   }
 
-  Widget router(BuildContext context, int i) {
+  Widget router(BuildContext context, int? i) {
     switch (i) {
       case 0:
         return Container(
@@ -75,13 +69,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           child: Column(
             children: [
               Text(langs[lang]["welcome"]["welcometext"],
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headlineMedium,
                   textAlign: TextAlign.center,
-                  textScaleFactor: 1),
+                  textScaler: TextScaler.noScaling),
               SizedBox(height: getProportionateScreenHeight(50)),
               Text(
                 langs[lang]["welcome"]["tellreason"],
-                style: Theme.of(context).textTheme.headline4.copyWith(
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                     fontSize: getProportionateScreenWidth(22),
                     color: Colors.black.withAlpha(150)),
                 textAlign: TextAlign.center,
@@ -101,8 +95,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: [
                   TextButton(
                       onPressed: () {
-                        if (currentReason.trim() == "") return false;
-                        if (reason.contains(currentReason.trim())) return false;
+                        if (currentReason.trim() == '') return;
+                        if (reason.contains(currentReason.trim())) return;
                         reason.add(currentReason.trim());
                         currentReason = "";
                         myController.clear();
@@ -146,7 +140,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 langs[lang]["welcome"]["weneedtoknow"],
                 style: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headlineMedium!
                     .copyWith(fontSize: getProportionateScreenWidth(32)),
                 textAlign: TextAlign.center,
               ),
@@ -191,12 +185,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
               FittedBox(
                 child: DropdownButton<String>(
-                  value: currency ?? null,
+                  value: currency,
                   hint: Text(
                     langs[lang]["welcome"]["choosecurrency"],
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium!
                         .copyWith(fontSize: getProportionateScreenWidth(26)),
                   ),
                   items: currencyList.map((Map value) {
@@ -206,7 +200,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     );
                   }).toList(),
                   onChanged: (p) {
-                    currency = p;
+                    currency = p!;
                     setState(() {});
                   },
                 ),
@@ -258,11 +252,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               if (!starting)
                 AvatarGlow(
                   glowColor: Colors.blue,
-                  endRadius: 180.0,
+                  //endRadius: 180.0,
                   duration: Duration(milliseconds: 2000),
                   repeat: true,
-                  showTwoGlows: false,
-                  repeatPauseDuration: Duration(milliseconds: 100),
+                  //showTwoGlows: false,
+                  //repeatPauseDuration: Duration(milliseconds: 100),
                   child: ElevatedButton(
                     child: Text(langs[lang]["welcome"]["start"]),
                     onPressed: () => _startNow(),
@@ -275,17 +269,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Container();
   }
 
-  DateTime stopDate;
+  late DateTime stopDate;
 
   _pickDate(BuildContext context) async {
-    DateTime date = await showDatePicker(
+    DateTime? date = await showDatePicker(
       context: context,
       firstDate: DateTime(DateTime.now().year - 5),
       lastDate: DateTime.now(),
       initialDate: stopDate,
     );
 
-    TimeOfDay t =
+    TimeOfDay? t =
         await showTimePicker(context: context, initialTime: TimeOfDay.now());
     if (date != null && t != null)
       setState(() {
@@ -376,9 +370,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     setState(() {
       if (reason.length != 0 && index == 0 ||
           (index == 1 &&
-              !(pricePerCigaratte == null ||
-                  dailycigarattes == null ||
-                  currency == null))) index += 1;
+              !(currency == null))) index += 1;
     });
   }
 
@@ -416,8 +408,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       );
 
   Widget _makeNavigationButton({
-    Icon icon,
-    VoidCallback action,
+    required Icon icon,
+    VoidCallback? action,
     bool isEnabled = true,
   }) {
     return IconButton(

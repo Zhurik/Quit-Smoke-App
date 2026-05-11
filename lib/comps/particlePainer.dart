@@ -7,17 +7,17 @@ import 'package:quitsmoke/comps/particleSpawner.dart';
 
 class ParticlePainterWidget extends StatefulWidget {
   final Size widgetSize;
-  ParticlePainterWidget({Key key, this.widgetSize}) : super(key: key);
+  ParticlePainterWidget({Key? key, required this.widgetSize}) : super(key: key);
 
   @override
   _ParticlePainterWidgetState createState() => _ParticlePainterWidgetState();
 }
 
 class _ParticlePainterWidgetState extends State<ParticlePainterWidget> {
-  Timer _timer;
-  ValueNotifier<double> _time;
+  late Timer _timer;
+  late ValueNotifier<double> _time;
 
-  ParticleSpawner particles;
+  late ParticleSpawner particles;
 
   @override
   void initState() {
@@ -29,6 +29,7 @@ class _ParticlePainterWidgetState extends State<ParticlePainterWidget> {
     _time = ValueNotifier(0);
 
     // Setup timer.
+    // ignore: unused_local_variable
     final begin = DateTime.now();
     _timer = Timer.periodic(
       Duration(
@@ -63,6 +64,7 @@ class _ParticlePainterWidgetState extends State<ParticlePainterWidget> {
         yval: initialY,
         vvalX: random.nextDouble() * 2,
         vvalY: random.nextDouble() * 2,
+        color: Color.fromRGBO(255, 255, 255, 1.0),
       ));
     }
   }

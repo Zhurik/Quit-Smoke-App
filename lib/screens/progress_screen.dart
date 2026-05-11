@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ import '../size_config.dart';
 
 class ProgressPage extends StatefulWidget {
   final Cigaratte cigaratteManager;
-  ProgressPage({Key key, this.cigaratteManager}) : super(key: key);
+  ProgressPage({Key? key, required this.cigaratteManager}) : super(key: key);
 
   @override
   _ProgressPageState createState() => _ProgressPageState();
@@ -21,7 +20,7 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage> {
   String lang = "";
-  Timer statetimer;
+  late Timer statetimer;
   @override
   void initState() {
     super.initState();
@@ -86,7 +85,7 @@ class _ProgressPageState extends State<ProgressPage> {
                                         htimes[i]["time"]),
                                     style: Theme.of(context)
                                         .textTheme
-                                        .bodyText2
+                                        .bodyMedium!
                                         .copyWith(
                                             color: Colors.white,
                                             fontSize:
@@ -100,7 +99,7 @@ class _ProgressPageState extends State<ProgressPage> {
                                         [htimes[i]["id"]],
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headlineMedium!
                                         .copyWith(
                                             color: Colors.white,
                                             fontSize:
@@ -180,7 +179,7 @@ class _ProgressPageState extends State<ProgressPage> {
           ),
           Text(
             "${langs[lang]["home"]["progress"]}",
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Colors.white, fontSize: getProportionateScreenWidth(26)),
           )
         ],

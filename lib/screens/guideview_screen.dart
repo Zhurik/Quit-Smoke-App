@@ -6,7 +6,7 @@ import 'package:quitsmoke/size_config.dart';
 import 'package:quitsmoke/static/lang.dart';
 
 class GuideViewScreen extends StatefulWidget {
-  GuideViewScreen({Key key, this.id, this.lang}) : super(key: key);
+  GuideViewScreen({Key? key, required this.id, required this.lang}) : super(key: key);
   final String id;
   final String lang;
   @override
@@ -54,7 +54,7 @@ class _GuideViewScreenState extends State<GuideViewScreen> {
                 ),
                 AutoSizeText(
                   "${actual["title"]}",
-                  style: Theme.of(context).textTheme.headline3.copyWith(
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       color: Colors.black,
                       fontSize: getProportionateScreenWidth(26)),
                   maxLines: 2,
@@ -91,7 +91,7 @@ class _GuideViewScreenState extends State<GuideViewScreen> {
     );
   }
 
-  Container buildTextContainer(BuildContext context, String title, var text) {
+  Container buildTextContainer(BuildContext context, String? title, var text) {
     return Container(
       margin: EdgeInsets.all(8),
       padding: EdgeInsets.all(16),
@@ -111,7 +111,7 @@ class _GuideViewScreenState extends State<GuideViewScreen> {
             "$title",
             style: Theme.of(context)
                 .textTheme
-                .bodyText2
+                .bodyMedium!
                 .copyWith(fontSize: getProportionateScreenWidth(26)),
             textAlign: TextAlign.left,
           ),
@@ -121,9 +121,9 @@ class _GuideViewScreenState extends State<GuideViewScreen> {
           text[0].length == 1
               ? Text(
                   "$text",
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: getProportionateScreenWidth(22),
-                      color: Colors.black.withOpacity(.8)),
+                      color: Colors.black.withValues(alpha: 0.8)),
                   textAlign: TextAlign.left,
                 )
               : Column(
@@ -135,10 +135,10 @@ class _GuideViewScreenState extends State<GuideViewScreen> {
                             "$i",
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyText1
+                                .bodyLarge!
                                 .copyWith(
                                     fontSize: getProportionateScreenWidth(22),
-                                    color: Colors.black.withOpacity(.8)),
+                                    color: Colors.black.withValues(alpha: 0.8)),
                             textAlign: TextAlign.left,
                           ),
                           SizedBox(

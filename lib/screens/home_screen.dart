@@ -26,7 +26,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Cigaratte cigaraManager;
+  late Cigaratte cigaraManager;
   String lang = "";
   String currency = "";
   String tiptext = "";
@@ -34,12 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> loadData() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    currency = pref.getString("currency");
+    currency = pref.getString("currency")!;
 
     cigaraManager = Cigaratte(
-        dailyCigarattes: pref.getInt("dailycigarattes"),
-        pricePerCigaratte: pref.getDouble("pricePerCigaratte"),
-        startDate: DateTime.parse(pref.getString("startTime")));
+        dailyCigarattes: pref.getInt("dailycigarattes")!,
+        pricePerCigaratte: pref.getDouble("pricePerCigaratte")!,
+        startDate: DateTime.parse(pref.getString("startTime")!));
   }
 
   int lastRndInt = -1;
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   showAlertDialog(BuildContext context) {
-    Widget cancelButton = FlatButton(
+    Widget? cancelButton = TextButton(
       child: Text(
         "${langs[lang]["home"]["cancel"]}",
       ),
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.of(context).pop();
       },
     );
-    Widget helpButton = FlatButton(
+    Widget helpButton = TextButton(
       child: Text(
         "${langs[lang]["guide"]["ifyouslip"]["title"]}",
       ),
@@ -95,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }));
       },
     );
-    Widget helpButton2 = FlatButton(
+    Widget helpButton2 = TextButton(
       child: Text(
         "${langs[lang]["guide"]["managecravings"]["title"]}",
       ),
@@ -106,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
         }));
       },
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text(
         "${langs[lang]["home"]["reset"]}",
         style: TextStyle(color: Colors.red),
@@ -144,7 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (cigaraManager == null) return Text("");
     Size sc = MediaQuery.of(context).size;
     SizeConfig().init(context);
     return Scaffold(
@@ -168,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     circleWidth: 15,
                     defaultCircleColor: Colors.lightGreen,
                     percentageCompletedCircleColor:
-                        Colors.grey.withOpacity(0.2),
+                        Colors.grey.withValues(alpha: 0.2),
                   ),
                   child: Center(
                     child: Column(
@@ -181,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.bold,
                               shadows: [
                                 Shadow(
-                                    color: kShadowColor.withOpacity(.2),
+                                    color: kShadowColor.withValues(alpha: 0.2),
                                     blurRadius: 32)
                               ]),
                         ),
@@ -309,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
             style: Theme.of(context)
                 .textTheme
-                .bodyText2
+                .bodyMedium!
                 .copyWith(fontSize: getProportionateScreenWidth(18)),
           ),
           Padding(
@@ -317,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: AutoSizeText(
               "${langs[lang]["progressDescription"][cigaraManager.upcomingEvent["id"]]}",
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               maxLines: 2,
             ),
           ),
@@ -357,7 +356,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Row buildBottom() {
-    int days = cigaraManager.calculatePassedTime().inDays;
+    int? days = cigaraManager.calculatePassedTime().inDays;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -401,24 +400,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return "";
   }
 
-  Column buildDayItem({int count, bool checked, bool current}) {
+  Column buildDayItem({int? count, bool? checked, bool? current}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        checked
+        checked!
             ? Icon(
                 Icons.check,
                 color: Colors.green,
               )
-            : current
+            : current!
                 ? Icon(
                     Icons.adjust,
                     color: Colors.green,
                   )
                 : Icon(
                     Icons.adjust,
-                    color: Theme.of(context).backgroundColor,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                   ),
         SizedBox(
           height: 4,
@@ -431,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: checked ? Colors.lightGreen : Colors.grey[100],
               boxShadow: [
                 BoxShadow(
-                    color: kShadowColor.withOpacity(.32),
+                    color: kShadowColor.withValues(alpha: 0.32),
                     blurRadius: 12,
                     offset: Offset(5, 5)),
                 BoxShadow(
@@ -447,8 +446,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Padding buildInfoCard(BuildContext context, String title, String text,
-      IconData icon, Color color) {
+  Padding buildInfoCard(BuildContext context, String? title, String? text,
+      IconData? icon, Color? color) {
     return Padding(
       padding: EdgeInsets.all(getProportionateScreenWidth(20)),
       child: SizedBox(
@@ -459,12 +458,12 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: Theme.of(context).primaryIconTheme.color,
+                color: Theme.of(context).primaryIconTheme.color!,
               ),
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).scaffoldBackgroundColor,
               boxShadow: [
                 BoxShadow(
-                    color: kShadowColor.withOpacity(.32),
+                    color: kShadowColor.withValues(alpha: 0.32),
                     offset: Offset(6, 6),
                     blurRadius: 12)
               ]),
@@ -478,8 +477,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     width: getProportionateScreenWidth(150),
                     child: AutoSizeText(
-                      title,
-                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      title!,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontSize: getProportionateScreenWidth(16),
                           color: color),
                       maxLines: 2,
@@ -493,8 +492,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 5),
               AutoSizeText(
-                text,
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: getProportionateScreenWidth(14)),
                 maxLines: 2,
@@ -507,18 +506,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   InkWell buildCategoryCard(Size sc, BuildContext context,
-      {Color color, IconData icon, String text, String id, Function onTap}) {
+      {Color? color, IconData? icon, String? text, String? id, Function? onTap}) {
     return InkWell(
-      onTap: onTap,
+      onTap: onTap as GestureTapCallback?,
       child: Ink(
         padding: EdgeInsets.symmetric(
             horizontal: 10, vertical: getProportionateScreenHeight(15)),
         decoration: BoxDecoration(
             border: Border.all(
-              color: Theme.of(context).primaryIconTheme.color,
+              color: Theme.of(context).primaryIconTheme.color!,
             ),
             borderRadius: BorderRadius.circular(12),
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).scaffoldBackgroundColor,
             boxShadow: [
               BoxShadow(
                   color: Colors.white,
@@ -534,7 +533,7 @@ class _HomeScreenState extends State<HomeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Hero(
-                tag: id,
+                tag: id!,
                 child: Icon(
                   icon,
                   color: color,
@@ -545,8 +544,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 3,
               ),
               AutoSizeText(
-                text,
-                style: Theme.of(context).textTheme.headline4.copyWith(
+                text!,
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                     color: color,
                     fontSize: getProportionateScreenWidth(20),
                     fontWeight: FontWeight.w600),

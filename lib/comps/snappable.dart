@@ -1,7 +1,6 @@
 library snappable;
 
 import 'dart:math' as math;
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -36,11 +35,11 @@ class Snappable extends StatefulWidget {
   final bool snapOnTap;
 
   /// Function that gets called when snap ends
-  final VoidCallback onSnapped;
+  final VoidCallback? onSnapped;
 
   const Snappable({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.offset = const Offset(64, -32),
     this.duration = const Duration(milliseconds: 5000),
     this.randomDislocationOffset = const Offset(64, 32),
@@ -62,19 +61,19 @@ class SnappableState extends State<Snappable>
   bool get isGone => _animationController.isCompleted;
 
   /// Main snap effect controller
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   /// Key to get image of a [widget.child]
-  GlobalKey _globalKey = GlobalKey();
+  final GlobalKey _globalKey = GlobalKey();
 
   /// Layers of image
-  List<Uint8List> _layers;
+  List<Uint8List> _layers = [];
 
   /// Values from -1 to 1 to dislocate the layers a bit
-  List<double> _randoms;
+  late List<double> _randoms;
 
   /// Size of child widget
-  Size size;
+  late Size size;
 
   @override
   void initState() {
@@ -86,7 +85,7 @@ class SnappableState extends State<Snappable>
 
     if (widget.onSnapped != null) {
       _animationController.addStatusListener((status) {
-        if (status == AnimationStatus.completed) widget.onSnapped();
+        if (status == AnimationStatus.completed) widget.onSnapped?.call();
       });
     }
   }
@@ -104,11 +103,11 @@ class SnappableState extends State<Snappable>
       child: Stack(
         alignment: Alignment.center,
         children: <Widget>[
-          if (_layers != null) ..._layers.map(_imageToWidget),
+          ..._layers.map(_imageToWidget),
           AnimatedBuilder(
             animation: _animationController,
             builder: (context, child) {
-              return _animationController.isDismissed ? child : Container();
+              return _animationController.isDismissed ? child! : Container();
             },
             child: RepaintBoundary(
               key: _globalKey,
@@ -176,7 +175,7 @@ class SnappableState extends State<Snappable>
   /// I am... IRON MAN   ~Tony Stark
   void reset() {
     setState(() {
-      _layers = null;
+      _layers = [];
       _animationController.reset();
     });
   }
@@ -225,11 +224,11 @@ class SnappableState extends State<Snappable>
   }
 
   /// Returns index of a randomly chosen bucket
-  int _pickABucket(List<int> weights, int sumOfWeights) {
-    int rnd = math.Random().nextInt(sumOfWeights);
+  int _pickABucket(List<int> weights, int? sumOfWeights) {
+    int? rnd = math.Random().nextInt(sumOfWeights!);
     int chosenImage = 0;
     for (int i = 0; i < widget.numberOfBuckets; i++) {
-      if (rnd < weights[i]) {
+      if (rnd! < weights[i]) {
         chosenImage = i;
         break;
       }
@@ -241,18 +240,18 @@ class SnappableState extends State<Snappable>
   /// Gets an Image from a [child] and caches [size] for later us
   Future<image.Image> _getImageFromWidget() async {
     RenderRepaintBoundary boundary =
-        _globalKey.currentContext.findRenderObject();
+        _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     //cache image for later
     size = boundary.size;
     var img = await boundary.toImage();
     var byteData = await img.toByteData(format: ImageByteFormat.png);
-    var pngBytes = byteData.buffer.asUint8List();
+    var pngBytes = byteData?.buffer.asUint8List();
 
-    return image.decodeImage(pngBytes);
+    return image.decodeImage(pngBytes!)!;
   }
 
-  int _gauss(double center, double value) =>
-      (1000 * math.exp(-(math.pow((value - center), 2) / 0.14))).round();
+  int _gauss(double center, double? value) =>
+      (1000 * math.exp(-(math.pow((value! - center), 2) / 0.14))).round();
 }
 
 /// This is slow! Run it in separate isolate

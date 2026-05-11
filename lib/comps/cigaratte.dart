@@ -5,15 +5,15 @@ class Cigaratte {
   final int dailyCigarattes;
   final String lang;
 
-  double cigarattePerSecond;
-  double moneyPerSecond;
+  late double cigarattePerSecond;
+  late double moneyPerSecond;
   double toUp = 0;
 
   Cigaratte(
-      {this.startDate,
-      this.pricePerCigaratte,
-      this.dailyCigarattes,
-      this.lang}) {
+      {required this.startDate,
+      required this.pricePerCigaratte,
+      required this.dailyCigarattes,
+      this.lang = 'en'}) {
     cigarattePerSecond = dailyCigarattes / (24 * 60 * 60.0);
     moneyPerSecond = cigarattePerSecond * pricePerCigaratte;
   }
@@ -40,7 +40,7 @@ class Cigaratte {
 
   Map get upcomingEvent {
     Duration maduration = calculatePassedTime();
-    Map event;
+    Map event = {};
     for (Map element in htimes) {
       if (element["time"].inSeconds > maduration.inSeconds) {
         event = element;
@@ -70,7 +70,7 @@ class Cigaratte {
 }
 
 /* void main() {
-  Cigaratte cigara = Cigaratte(
+  Cigaratte? cigara = Cigaratte(
       dailyCigarattes: 20,
       pricePerCigaratte: 12,
       startDate: DateTime.now().subtract(Duration(days: 0, seconds: 500)));

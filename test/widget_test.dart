@@ -1,30 +1,23 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:quitsmoke/main.dart';
+import 'package:quitsmoke/comps/cigaratte.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  test('Cigaratte calculates saved money correctly', () {
+    final c = Cigaratte(
+      dailyCigarattes: 20,
+      pricePerCigaratte: 1.0,
+      startDate: DateTime.now().subtract(Duration(days: 1)),
+    );
+    expect(c.getSavedMoney, closeTo(20.0, 0.1));
+    expect(c.getsavedCigarattes, closeTo(20.0, 0.1));
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('Cigaratte day percentage is between 0 and 100', () {
+    final c = Cigaratte(
+      dailyCigarattes: 10,
+      pricePerCigaratte: 0.5,
+      startDate: DateTime.now().subtract(Duration(hours: 12)),
+    );
+    expect(c.getdayPercentage, inInclusiveRange(0, 100));
   });
 }
